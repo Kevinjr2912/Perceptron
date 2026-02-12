@@ -5,16 +5,13 @@ import matplotlib.pyplot as plt
 
 def load_data(path):
     data = pd.read_csv(path)
-
-    # Insertar columna de sesgo
-    data.insert(0, "xo", 1.0)
-    x = data.iloc[:, [0,1,2]].to_numpy()
-    y_o = data.iloc[:, 3].to_numpy()
+    x = data.iloc[:, [0,1]].to_numpy() 
+    y_o = data.iloc[:, 2].to_numpy()
     return x, y_o
 
 # Entrenar por lambda
 def train_with_lambda(x, y_o, learning_rate, K):
-    w = np.random.uniform(-20, 20, size=x.shape[1])
+    w = np.random.uniform(-20, 20, size=x.shape[1] + 1)
     perceptron = Perceptron(x, w, y_o)
 
     errors_per_epoch = []
@@ -72,7 +69,7 @@ def save_weights_summary(weights_summary, filename="initial_final_weights.csv"):
     print(f"Dataset de pesos guardado")
 
 def main():
-    path = "/Users/kev29.06/Documents/Cuatrimestre-8/Inteligencia Artificial/ia-perceptron/dataset.csv"
+    path = "/Users/kev29.06/Documents/Cuatrimestre-8/Inteligencia Artificial/ia-perceptron/dataset/dataset.csv"
     x, y_o = load_data(path)
 
     K = 500
@@ -93,8 +90,9 @@ def main():
             **{f'w{i}_final': w_final[i] for i in range(len(w_final))}
         })
 
-        # Graficar pesos
-        plot_weights(weights_history, lr)
+        if lr == 1e-6:
+            # Graficar pesos
+            plot_weights(weights_history, lr)
 
         # Guardar errores para gráfica global
         all_errors.append((lr, errors))
